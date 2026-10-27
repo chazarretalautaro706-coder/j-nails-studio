@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const servicios = [
   {
@@ -9,8 +9,7 @@ const servicios = [
     precio: 18000,
     categoria: "EXTENSIONES",
     duracion: "90 min",
-    imagen:
-      "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=900&q=85",
+    imagen: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=900&q=85",
   },
   {
     nombre: "Kapping",
@@ -18,8 +17,7 @@ const servicios = [
     precio: 15000,
     categoria: "FORTALECIMIENTO",
     duracion: "75 min",
-    imagen:
-      "https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=900&q=85",
+    imagen: "https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=900&q=85",
   },
   {
     nombre: "Semipermanente",
@@ -27,8 +25,7 @@ const servicios = [
     precio: 10000,
     categoria: "ESMALTADO",
     duracion: "60 min",
-    imagen:
-      "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=900&q=85",
+    imagen: "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=900&q=85",
   },
   {
     nombre: "Nail Art",
@@ -36,23 +33,16 @@ const servicios = [
     precio: 22000,
     categoria: "DISEÑO EXCLUSIVO",
     duracion: "120 min",
-    imagen:
-      "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=900&q=85",
+    imagen: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=900&q=85",
   },
 ];
 
 const horarios = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00", "18:30"];
-
-// ¡ACÁ ESTABA EL ERROR! YA LO ARREGLÉ CON TU NUMERO REAL
 const WHATSAPP_ESTUDIO = "5492214555453";
 const INSTAGRAM_ESTUDIO = "jnailsstudio.lp";
 
 const formatoPrecio = (precio: number) =>
-  precio.toLocaleString("es-AR", {
-    style: "currency",
-    currency: "ARS",
-    maximumFractionDigits: 0,
-  });
+  precio.toLocaleString("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
 
 const fechaLocal = (fecha: Date) => {
   const anio = fecha.getFullYear();
@@ -61,28 +51,8 @@ const fechaLocal = (fecha: Date) => {
   return `${anio}-${mes}-${dia}`;
 };
 
-const fechaLegible = (valor: string) => {
-  const [anio, mes, dia] = valor.split("-").map(Number);
-  return new Date(anio, mes - 1, dia).toLocaleDateString("es-AR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-};
-
-function obtenerFechas() {
-  const fechas: Date[] = [];
-  const hoy = new Date();
-  for (let i = 0; i < 14; i++) {
-    const fecha = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + i);
-    if (fecha.getDay() !== 0) {
-      fechas.push(fecha);
-    }
-  }
-  return fechas;
-}
-
 export default function Home() {
+  const [fechas, setFechas] = useState<Date[]>([]);
   const [servicioElegido, setServicioElegido] = useState("Soft Gel");
   const [fechaElegida, setFechaElegida] = useState("");
   const [horaElegida, setHoraElegida] = useState("");
@@ -91,14 +61,23 @@ export default function Home() {
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
 
-  const fechas = obtenerFechas();
+  // FIX: Todo lo de new Date() ahora solo corre en el navegador
+  useEffect(() => {
+    const hoy = new Date();
+    const arr: Date[] = [];
+    for (let i = 0; i < 14; i++) {
+      const fecha = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + i);
+      if (fecha.getDay() !== 0) arr.push(fecha);
+    }
+    setFechas(arr);
+  }, []);
+
   const servicio = servicios.find((item) => item.nombre === servicioElegido)!;
 
   function solicitarTurno(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
     setMensaje("");
-
     if (!fechaElegida || !horaElegida) {
       setError("Elegí una fecha y un horario para continuar.");
       return;
@@ -108,16 +87,21 @@ export default function Home() {
       return;
     }
 
+    const fechaLegible = (valor: string) => {
+      const [anio, mes, dia] = valor.split("-").map(Number);
+      return new Date(anio, mes - 1, dia).toLocaleDateString("es-AR", {
+        weekday: "long", day: "numeric", month: "long",
+      });
+    };
+
     const texto = [
-      "Hola! Quiero consultar por un turno en J Nails Studio.",
-      "",
+      "Hola! Quiero consultar por un turno en J Nails Studio.", "",
       `Servicio: ${servicio.nombre}`,
       `Precio publicado: ${formatoPrecio(servicio.precio)}`,
       `Fecha: ${fechaLegible(fechaElegida)}`,
       `Horario solicitado: ${horaElegida}`,
       `Nombre: ${nombre.trim()}`,
-      `Teléfono: ${telefono.trim()}`,
-      "",
+      `Teléfono: ${telefono.trim()}`, "",
       "Quedo a la espera de la confirmación. Gracias!",
     ].join("\n");
 
@@ -140,7 +124,7 @@ export default function Home() {
             <a className="transition hover:text-[#b77a85]" href="#reservar">Turnos</a>
             <a href={`https://instagram.com/${INSTAGRAM_ESTUDIO}`} target="_blank" className="text-[#b77a85] hover:text-pink-600">IG: @{INSTAGRAM_ESTUDIO}</a>
           </nav>
-          <a href="#reservar" className="rounded-full bg-[#b87986] px-5 py-3 text-sm text-white transition hover:bg-[#9f606e]">Reservar turno ↗</a>
+          <a href="#reservar" className="rounded-full bg-[#b87986] px-5 py-3 text-sm text-white">Reservar turno ↗</a>
         </div>
       </header>
 
@@ -163,10 +147,10 @@ export default function Home() {
       <section id="servicios" className="bg-[#f5ebe6] px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {servicios.map((item, index) => (
+            {servicios.map((item) => (
               <article key={item.nombre} className="group overflow-hidden rounded-2xl border border-[#eadbd4] bg-[#fffaf7]">
                 <div className="relative overflow-hidden">
-                  <img src={item.imagen} alt={item.nombre} className="h-64 w-full object-cover" loading="lazy" />
+                  <img src={item.imagen} alt={item.nombre} className="h-64 w-full object-cover" />
                   <span className="absolute left-4 top-4 rounded-full bg-[#fffaf7]/95 px-3 py-2 text-[10px] tracking-[0.15em] text-[#986a70]">{item.categoria}</span>
                 </div>
                 <div className="flex min-h-[265px] flex-col p-6">
@@ -188,19 +172,20 @@ export default function Home() {
           <form onSubmit={solicitarTurno} className="grid overflow-hidden rounded-3xl border border-[#e8d7cf] bg-[#fffaf7] lg:grid-cols-[1.15fr_0.85fr]">
             <div className="space-y-9 p-6 md:p-10">
               <div>
-                <label htmlFor="servicio" className="mt-4 block text-sm font-medium">¿Qué servicio querés?</label>
-                <select id="servicio" value={servicioElegido} onChange={(e) => setServicioElegido(e.target.value)} className="mt-3 w-full rounded-xl border border-[#e5d5cd] bg-white px-4 py-4 text-sm">
+                <label className="mt-4 block text-sm font-medium">¿Qué servicio querés?</label>
+                <select value={servicioElegido} onChange={(e) => setServicioElegido(e.target.value)} className="mt-3 w-full rounded-xl border border-[#e5d5cd] bg-white px-4 py-4 text-sm">
                   {servicios.map((item) => (<option key={item.nombre} value={item.nombre}>{item.nombre} — {formatoPrecio(item.precio)}</option>))}
                 </select>
               </div>
               <div>
                 <p className="text-xs font-semibold tracking-[0.2em] text-[#b66d7d]">FECHA</p>
                 <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4">
-                  {fechas.map((fecha) => {
-                    const valor = fechaLocal(fecha);
-                    const seleccionada = fechaElegida === valor;
-                    return (<button key={valor} type="button" onClick={() => { setFechaElegida(valor); setHoraElegida(""); setError(""); }} className={`rounded-xl border px-2 py-4 text-center ${seleccionada ? "border-[#b87986] bg-[#b87986] text-white" : "border-[#eadbd4] bg-white"}`}><span className="block text-xs capitalize">{fecha.toLocaleDateString("es-AR", { weekday: "short" })}</span><span className="mt-1 block text-xl">{fecha.getDate()}</span></button>);
-                  })}
+                  {fechas.length === 0 ? <p className="text-sm text-[#b77a85]">Cargando fechas...</p> :
+                    fechas.map((fecha) => {
+                      const valor = fechaLocal(fecha);
+                      const seleccionada = fechaElegida === valor;
+                      return (<button key={valor} type="button" onClick={() => { setFechaElegida(valor); setHoraElegida(""); setError(""); }} className={`rounded-xl border px-2 py-4 text-center ${seleccionada ? "border-[#b87986] bg-[#b87986] text-white" : "border-[#eadbd4] bg-white"}`}><span className="block text-xs capitalize">{fecha.toLocaleDateString("es-AR", { weekday: "short" })}</span><span className="mt-1 block text-xl">{fecha.getDate()}</span></button>);
+                    })}
                 </div>
               </div>
               <div>
@@ -212,10 +197,10 @@ export default function Home() {
             </div>
             <div className="border-t border-[#eadbd4] bg-white p-6 md:p-10 lg:border-l lg:border-t-0">
               <h3 className="mt-4 font-serif text-3xl">Casi listo ♡</h3>
-              <label htmlFor="nombre" className="mt-7 block text-sm font-medium">Nombre y apellido</label>
-              <input id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required placeholder="Cómo te llamás" className="mt-2 w-full rounded-xl border border-[#e5d5cd] px-4 py-3" />
-              <label htmlFor="telefono" className="mt-5 block text-sm font-medium">Tu teléfono</label>
-              <input id="telefono" value={telefono} onChange={(e) => setTelefono(e.target.value)} required type="tel" placeholder="Tu número" className="mt-2 w-full rounded-xl border border-[#e5d5cd] px-4 py-3" />
+              <label className="mt-7 block text-sm font-medium">Nombre y apellido</label>
+              <input value={nombre} onChange={(e) => setNombre(e.target.value)} required placeholder="Cómo te llamás" className="mt-2 w-full rounded-xl border border-[#e5d5cd] px-4 py-3" />
+              <label className="mt-5 block text-sm font-medium">Tu teléfono</label>
+              <input value={telefono} onChange={(e) => setTelefono(e.target.value)} required type="tel" placeholder="Tu número" className="mt-2 w-full rounded-xl border border-[#e5d5cd] px-4 py-3" />
               {error && (<p className="mt-4 text-sm text-red-700">{error}</p>)}
               {mensaje && (<p className="mt-4 rounded-xl border bg-[#fffaf7] p-4 text-sm">{mensaje}</p>)}
               <button type="submit" className="mt-6 w-full rounded-full bg-[#b87986] px-6 py-4 text-sm font-medium text-white hover:bg-[#9f606e]">Solicitar turno por WhatsApp ↗</button>
@@ -232,8 +217,6 @@ export default function Home() {
           <a href={`https://instagram.com/${INSTAGRAM_ESTUDIO}`} target="_blank" className="text-pink-600">Instagram: @{INSTAGRAM_ESTUDIO}</a>
         </div>
       </footer>
-
-      {/* BOTON FLOTANTE WHATSAPP */}
       <a href={`https://wa.me/${WHATSAPP_ESTUDIO}?text=Hola%20J%20Nails%20Studio!%20Quiero%20un%20turno%20💅`} target="_blank" className="fixed bottom-6 right-6 z-50 flex h-16 w-16 items-center justify-center rounded-full bg-green-500 text-3xl text-white shadow-xl">💬</a>
     </main>
   );
