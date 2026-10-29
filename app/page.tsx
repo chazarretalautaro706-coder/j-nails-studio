@@ -139,7 +139,7 @@ export default function Home() {
         </div>
         <div className="relative mx-auto w-full max-w-lg pb-5">
           <div className="absolute -right-3 -top-3 h-full w-full rounded-t-full border border-[#d9b5ad]" />
-          <img src={servicios[0].imagen} alt="Diseño elegante" className="relative h-[440px] w-full rounded-t-full object-cover shadow-xl md:h-[590px]" />
+          <img src="/portada.jpeg" alt="Portada J Nails Studio - Uñas negras" className="relative h-[440px] w-full rounded-t-full object-cover shadow-xl md:h-[590px]" />
         </div>
       </section>
 
