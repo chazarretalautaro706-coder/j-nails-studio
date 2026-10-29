@@ -20,7 +20,7 @@ const servicios = [
     imagen: "/kapping-polygel.jpeg",
   },
   {
-    nombre: "SEMI",
+    nombre: "SEMIPERMANENTE",
     descripcion: "Color brillante y duradero.",
     precio: 15000,
     categoria: "ESMALTADO",
