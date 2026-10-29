@@ -39,6 +39,7 @@ const servicios = [
 const horarios = ["09:00", "13:00", "17:00"];
 const WHATSAPP_ESTUDIO = "5492214555453";
 const INSTAGRAM_ESTUDIO = "jnailsstudio.lp";
+const PRECIO_RETIRO = 2000;
 
 const formatoPrecio = (precio: number) =>
   precio.toLocaleString("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
@@ -59,6 +60,7 @@ export default function Home() {
   const [telefono, setTelefono] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
+  const [agregarRetiro, setAgregarRetiro] = useState(false);
 
   useEffect(() => {
     const hoy = new Date();
@@ -66,7 +68,6 @@ export default function Home() {
     for (let i = 0; i < 14; i++) {
       const fecha = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + i);
       const dia = fecha.getDay();
-      // 0=Domingo CERRADO, 3=Miercoles CERRADO, 4=Jueves CERRADO, 5=Viernes CERRADO
       if (dia !== 3 && dia !== 4 && dia !== 5) {
         arr.push(fecha);
       }
@@ -75,6 +76,7 @@ export default function Home() {
   }, []);
 
   const servicio = servicios.find((item) => item.nombre === servicioElegido)!;
+  const total = servicio.precio + (agregarRetiro ? PRECIO_RETIRO : 0);
 
   const esDiaCerrado = (fechaString: string) => {
     if (!fechaString) return false;
@@ -107,10 +109,14 @@ export default function Home() {
       });
     };
 
+    const detalleServicio = agregarRetiro
+      ? `${servicio.nombre} + Retiro de servicios`
+      : servicio.nombre;
+
     const texto = [
-      "Hola! Quiero consultar por un turno en J Nails Studio.", "",
-      `Servicio: ${servicio.nombre}`,
-      `Precio publicado: ${formatoPrecio(servicio.precio)}`,
+      "Hola! Quiero consultar por un turno en J Nails Studio. ♡", "",
+      `Servicio: ${detalleServicio}`,
+      `Precio: ${formatoPrecio(total)}${agregarRetiro ? ` (${formatoPrecio(servicio.precio)} + ${formatoPrecio(PRECIO_RETIRO)} retiro)` : ""}`,
       `Fecha: ${fechaLegible(fechaElegida)}`,
       `Horario solicitado: ${horaElegida}`,
       `Nombre: ${nombre.trim()}`,
@@ -189,6 +195,26 @@ export default function Home() {
                 <select value={servicioElegido} onChange={(e) => setServicioElegido(e.target.value)} className="mt-3 w-full rounded-xl border border-[#e5d5cd] bg-white px-4 py-4 text-sm">
                   {servicios.map((item) => (<option key={item.nombre} value={item.nombre}>{item.nombre} — {formatoPrecio(item.precio)}</option>))}
                 </select>
+                
+                {/* CHECKBOX RETIRO - AGREGADO SUTIL */}
+                <div className="mt-4 flex items-center gap-2 rounded-xl border border-[#f2ddd6] bg-[#fff5f2] px-4 py-3">
+                  <input 
+                    type="checkbox" 
+                    id="retiro"
+                    checked={agregarRetiro}
+                    onChange={(e) => setAgregarRetiro(e.target.checked)}
+                    className="h-4 w-4 rounded border-[#e5d5cd] text-[#b87986] focus:ring-[#f9e8ec]" 
+                  />
+                  <label htmlFor="retiro" className="flex-1 cursor-pointer text-[13px] text-[#8A6A70]">
+                    Agregar retiro de servicios — <span className="font-semibold text-[#b87986]">+ {formatoPrecio(PRECIO_RETIRO)}</span>
+                  </label>
+                </div>
+
+                {/* TOTAL DINÁMICO */}
+                <div className="mt-3 flex items-center justify-between px-1">
+                  <span className="text-sm text-[#826c64]">Total:</span>
+                  <span className="text-lg font-semibold text-[#49352f]">{formatoPrecio(total)}</span>
+                </div>
               </div>
               <div>
                 <p className="text-xs font-semibold tracking-[0.2em] text-[#b66d7d]">FECHA</p>
@@ -217,6 +243,7 @@ export default function Home() {
               {error && (<p className="mt-4 text-sm text-red-700">{error}</p>)}
               {mensaje && (<p className="mt-4 rounded-xl border bg-[#fffaf7] p-4 text-sm">{mensaje}</p>)}
               <button type="submit" className="mt-6 w-full rounded-full bg-[#b87986] px-6 py-4 text-sm font-medium text-white hover:bg-[#9f606e]">Solicitar turno por WhatsApp ↗</button>
+              <p className="mt-3 text-center text-xs text-[#b77a85]">Total a abonar: {formatoPrecio(total)}</p>
             </div>
           </form>
         </div>
