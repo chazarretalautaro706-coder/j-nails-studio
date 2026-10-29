@@ -148,8 +148,8 @@ export default function Home() {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {servicios.map((item) => (
               <article key={item.nombre} className="group overflow-hidden rounded-2xl border border-[#eadbd4] bg-[#fffaf7]">
-                <div className="relative overflow-hidden">
-                  <img src={item.imagen} alt={item.nombre} className="h-64 w-full object-cover" />
+               <div className="relative overflow-hidden bg-[#fdf2ec] flex items-center justify-center">
+  <img src={item.imagen} alt={item.nombre} className="w-full aspect-[4/3] object-contain p-2" />
                   <span className="absolute left-4 top-4 rounded-full bg-[#fffaf7]/95 px-3 py-2 text-[10px] tracking-[0.15em] text-[#986a70]">{item.categoria}</span>
                 </div>
                 <div className="flex min-h-[265px] flex-col p-6">
