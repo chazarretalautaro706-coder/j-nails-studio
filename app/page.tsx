@@ -36,7 +36,7 @@ const servicios = [
     imagen: "/kapping-gel.jpeg",
   },
 ];
-const horarios = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00", "18:30"];
+const horarios = ["09:00", "13:00", "17:00"];
 const WHATSAPP_ESTUDIO = "5492214555453";
 const INSTAGRAM_ESTUDIO = "jnailsstudio.lp";
 
@@ -52,7 +52,7 @@ const fechaLocal = (fecha: Date) => {
 
 export default function Home() {
   const [fechas, setFechas] = useState<Date[]>([]);
-  const [servicioElegido, setServicioElegido] = useState("Soft Gel");
+  const [servicioElegido, setServicioElegido] = useState("SOFT GEL");
   const [fechaElegida, setFechaElegida] = useState("");
   const [horaElegida, setHoraElegida] = useState("");
   const [nombre, setNombre] = useState("");
@@ -60,18 +60,28 @@ export default function Home() {
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
 
-  // FIX: Todo lo de new Date() ahora solo corre en el navegador
   useEffect(() => {
     const hoy = new Date();
     const arr: Date[] = [];
     for (let i = 0; i < 14; i++) {
       const fecha = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + i);
-      if (fecha.getDay() !== 0) arr.push(fecha);
+      const dia = fecha.getDay();
+      // 0=Domingo CERRADO, 3=Miercoles CERRADO, 4=Jueves CERRADO, 5=Viernes CERRADO
+      if (dia !== 0 && dia !== 3 && dia !== 4 && dia !== 5) {
+        arr.push(fecha);
+      }
     }
     setFechas(arr);
   }, []);
 
   const servicio = servicios.find((item) => item.nombre === servicioElegido)!;
+
+  const esDiaCerrado = (fechaString: string) => {
+    if (!fechaString) return false;
+    const fecha = new Date(fechaString + "T12:00:00");
+    const dia = fecha.getDay();
+    return [0, 3, 4, 5].includes(dia);
+  };
 
   function solicitarTurno(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -79,6 +89,10 @@ export default function Home() {
     setMensaje("");
     if (!fechaElegida || !horaElegida) {
       setError("Elegí una fecha y un horario para continuar.");
+      return;
+    }
+    if (esDiaCerrado(fechaElegida)) {
+      setError("Estamos cerrados Miércoles, Jueves y Viernes. Elegí Lunes, Martes, Sábado o Domingo.");
       return;
     }
     if (!nombre.trim() || !telefono.trim()) {
