@@ -4,39 +4,38 @@ import { useState, useEffect } from "react";
 
 const servicios = [
   {
-    nombre: "Soft Gel",
-    descripcion: "Extensiones elegantes y naturales.",
-    precio: 18000,
+    nombre: "SOFT GEL",
+    descripcion: "Extensiones elegantes y resistentes.",
+    precio: 22000,
     categoria: "EXTENSIONES",
     duracion: "90 min",
-    imagen: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=900&q=85",
+    imagen: "/soft-gel.jpeg",
   },
   {
-    nombre: "Kapping",
-    descripcion: "Protección, resistencia y belleza.",
-    precio: 15000,
+    nombre: "Kapping Polygel",
+    descripcion: "Refuerzo, nivelación y extensión natural.",
+    precio: 20000,
     categoria: "FORTALECIMIENTO",
-    duracion: "75 min",
-    imagen: "https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=900&q=85",
+    duracion: "80 min",
+    imagen: "/kapping-polygel.jpeg",
   },
   {
-    nombre: "Semipermanente",
+    nombre: "SEMI",
     descripcion: "Color brillante y duradero.",
-    precio: 10000,
+    precio: 15000,
     categoria: "ESMALTADO",
     duracion: "60 min",
-    imagen: "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=900&q=85",
+    imagen: "/semi.jpeg",
   },
   {
-    nombre: "Nail Art",
-    descripcion: "Diseños exclusivos, creados para vos.",
-    precio: 22000,
-    categoria: "DISEÑO EXCLUSIVO",
-    duracion: "120 min",
-    imagen: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=900&q=85",
+    nombre: "Kapping Gel",
+    descripcion: "Base fortalecedora para uñas naturales.",
+    precio: 18000,
+    categoria: "FORTALECIMIENTO",
+    duracion: "75 min",
+    imagen: "/kapping-gel.jpeg",
   },
 ];
-
 const horarios = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00", "18:30"];
 const WHATSAPP_ESTUDIO = "5492214555453";
 const INSTAGRAM_ESTUDIO = "jnailsstudio.lp";
