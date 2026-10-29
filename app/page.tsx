@@ -67,7 +67,7 @@ export default function Home() {
       const fecha = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + i);
       const dia = fecha.getDay();
       // 0=Domingo CERRADO, 3=Miercoles CERRADO, 4=Jueves CERRADO, 5=Viernes CERRADO
-      if (dia !== 0 && dia !== 3 && dia !== 4 && dia !== 5) {
+      if (dia !== 3 && dia !== 4 && dia !== 5) {
         arr.push(fecha);
       }
     }
@@ -80,7 +80,7 @@ export default function Home() {
     if (!fechaString) return false;
     const fecha = new Date(fechaString + "T12:00:00");
     const dia = fecha.getDay();
-    return [0, 3, 4, 5].includes(dia);
+    return [3, 4, 5].includes(dia);
   };
 
   function solicitarTurno(e: React.FormEvent<HTMLFormElement>) {
